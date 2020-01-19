@@ -1,0 +1,2399 @@
+swagger: '2.0'
+info:
+  version: 1.2.0
+  title: Customers API
+  description: >-
+    Customers API is used to maintain customer information. This is used to
+    create the propect customers, amend the customer information later on. This
+    is also used to view list of customer as well as viewing all the details for
+    a specific customer.
+host: localipv4
+schemes:
+  - https
+tags:
+  - name: Create Customer
+  - name: Update Customer
+  - name: Delete Customer
+  - name: GetCustomer Details
+  - name: ListCustomer Search
+basePath: /api/v1
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  '/customers/{recordid}':
+    get:
+      tags:
+        - GetCustomer Details
+      operationId: GetCustomersRecordid
+      summary: API to get customer detail
+      description: >-
+        API to get particular customer detail. It is acheived by supplying the
+        customer Id as path parameter
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: access_token
+          in: header
+          description: login token
+          required: true
+          type: string
+        - name: progressId
+          in: header
+          description: Progress Identifier
+          required: false
+          type: string
+        - name: recordid
+          in: path
+          description: Customer Number
+          required: true
+          type: string
+      responses:
+        '200':
+          description: getCustomersRecordidResponse
+          schema:
+            $ref: '#/definitions/getCustomersRecordidResponse'
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/getCustomersRecordidErrorResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Service Unavailable
+        '504':
+          description: GateWay Timeout
+  '/customers/{recordid}/delete':
+    post:
+      operationId: deleteCustomer
+      summary: API to delete customer
+      description: API to delete customer. It is used to delete the prospect customer
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Delete Customer
+      parameters:
+        - name: access_token
+          in: header
+          description: login token
+          required: true
+          type: string
+        - name: progressId
+          in: header
+          description: Progress Identifier
+          required: false
+          type: string
+        - name: recordid
+          in: path
+          description: Customer Number
+          required: true
+          type: string
+      responses:
+        '200':
+          description: getCustomersRecordidResponse
+          schema:
+            $ref: '#/definitions/getCustomersRecordidResponse'
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/getCustomersRecordidErrorResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Service Unavailable
+        '504':
+          description: GateWay Timeout
+  '/customers/{recordid}/update':
+    post:
+      operationId: postCustomersRecordidUpdate
+      summary: API to update customer information
+      description: >-
+        API to update particular customer details. Modification/changes will be
+        done for customer whose Id is supplied as path parameter.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Update Customer
+      parameters:
+        - name: access_token
+          in: header
+          description: login token
+          required: true
+          type: string
+        - name: progressId
+          in: header
+          description: Progress Identifier
+          required: false
+          type: string
+        - name: recordid
+          in: path
+          description: Customer Number
+          required: true
+          type: string
+        - in: body
+          name: payload
+          required: true
+          schema:
+            $ref: '#/definitions/postCustomersRecordidUpdate'
+      responses:
+        '200':
+          description: postCustomersRecordidUpdateResponse
+          schema:
+            $ref: '#/definitions/postCustomersRecordidUpdateResponse'
+        '201':
+          description: Created
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/postCustomersRecordidUpdateErrorResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Service Unavailable
+        '504':
+          description: GateWay Timeout
+  /customers:
+    get:
+      operationId: GetCustomers
+      summary: API to get list of customer alongwith their details
+      description: API to get information about all customers
+      tags:
+        - ListCustomer Search
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: access_token
+          in: header
+          description: login token
+          required: true
+          type: string
+        - name: progressId
+          in: header
+          description: Progress Identifier
+          required: false
+          type: string
+        - name: firstName
+          in: query
+          description: First Name of the Customer
+          required: false
+          type: string
+        - name: firstSurname
+          in: query
+          description: First Surname of the customer
+          required: false
+          type: string
+        - name: secondSurname
+          in: query
+          description: Second Surname of the Customer
+          required: false
+          type: string
+        - name: dateOfBirth
+          in: query
+          description: Customers Date of Birth
+          required: false
+          type: string
+          format: date-time
+        - name: legalDocId
+          in: query
+          required: false
+          description: Legal Document Id Number
+          type: string
+        - name: legalDocTypeTCode
+          in: query
+          description: Type of Legal Document
+          required: false
+          type: string
+        - name: page_size
+          in: query
+          description: The total number of records per page
+          required: false
+          type: integer
+          format: int32
+        - name: page_start
+          in: query
+          description: The record from which the response should be displayed
+          required: false
+          type: integer
+          format: int32
+        - name: page_token
+          in: query
+          description: Random and unique string for each page. Used for security purpose
+          required: false
+          type: string
+      responses:
+        '200':
+          description: getCustomersResponse
+          schema:
+            $ref: '#/definitions/getCustomersResponse'
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/getCustomersErrorResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Service Unavailable
+        '504':
+          description: GateWay Timeout
+    post:
+      operationId: PostCustomers
+      summary: API to create customer record
+      description: API to input customer detail in the record.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - Create Customer
+      parameters:
+        - name: access_token
+          in: header
+          description: login token
+          required: true
+          type: string
+        - name: progressId
+          in: header
+          description: Progress Identifier
+          required: false
+          type: string
+        - in: body
+          name: payload
+          required: true
+          schema:
+            $ref: '#/definitions/postCustomers'
+      responses:
+        '201':
+          description: postCustomersResponse
+          schema:
+            $ref: '#/definitions/postCustomersResponse'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/postCustomersErrorResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+        '503':
+          description: Service Unavailable
+        '504':
+          description: GateWay Timeout
+definitions:
+  screenHeader:
+    type: string
+    description: Header of the screen
+    properties:
+      id:
+        type: string
+      status:
+        type: string
+      transactionStatus:
+        type: string
+      audit:
+        type: object
+        properties:
+          T24_time:
+            type: integer
+            format: int32
+          parse_time:
+            type: integer
+            format: int32
+  getCustomersRecordidResponse:
+    properties:
+      header:
+        $ref: '#/definitions/screenHeader'
+      body:
+        $ref: '#/definitions/getCustomersRecordidResponseBody'
+    description: getCustomersRecordidResponse
+    type: object
+  getCustomersRecordidResponseBody:
+    type: object
+    properties:
+      vulnerabilities:
+        type: array
+        items:
+          type: object
+          properties:
+            vulnerabilityTCode:
+              type: string
+              description: Vulnerability Type of Customer
+              example: HEARING.IMPARED
+        description: Vulnerability Type of Customer
+      addresses:
+        type: array
+        description: >
+          This is the actual physical address of where the BIC code relates.
+
+          Wherever possible the uploaded field is reformatted to show the
+          following logical groups of information, in the following sequence
+          (each logical group is delimited by ':')
+
+          . Contact Person
+
+          . Building, Floor,Apartment
+
+          . Street Number, Street Name, Street Cardinal Point
+
+          . Second Street Number,Second Street Name,Second Street Cardinal
+          Point.
+        items:
+          type: object
+          properties:
+            street:
+              type: string
+              description: Street name of Customer's base address
+              example: Av Callao
+            number:
+              type: string
+              description: Building number of Customer's base address
+              example: '892'
+            floor:
+              type: string
+              description: Flat number of Customer's base address
+              example: '2'
+            department:
+              type: string
+              description: Department name of Customer's base address
+              example: A
+            monoblock:
+              type: string
+              description: Building name of Customer's base address
+              example: Palacio Barolo
+            additionalItems1:
+              type: string
+              description: >
+                It is used to store neighbourhood name in case of an Argentinan
+                address
+              example: San Telmo
+            additionalItems2:
+              type: string
+              description: >
+                It is used to store municipality name in case of an Argentinan
+                address
+              example: Alberti
+            countryTCode:
+              type: string
+              description: ''
+              example: AR
+            city:
+              type: string
+              description: ''
+              example: Buenos Aires
+            province:
+              type: string
+              description: ''
+              example: Buenos Aires
+            postCode:
+              type: string
+              description: >
+                Identifies the postal code for customer. On authorisation of a
+                customer record corresponding postal code field in the
+                DE.ADDRESS application will be updated.
+
+                1-35 type S (uppercase alpha or numeric) characters. (Optional
+                input. No default value.)
+              example: '1761'
+            addressTypeTCode:
+              type: string
+              description: ''
+              example: Home
+      telephones:
+        type: array
+        description: |
+          This is the contact details of the customer.
+        items:
+          type: object
+          properties:
+            countryCodeTCode:
+              type: string
+              description: Phone Prefix Code
+              example: AR
+            isPrimaryTelephoneTBoolean:
+              type: string
+              description: Phone Check
+              example: 'YES'
+            telephoneNumber:
+              type: string
+              description: Phone Number
+              example: '92231234567'
+            fullTelephoneNumber:
+              type: string
+              description: Full Telephone Number
+              example: '+5492231234567'
+            startTime:
+              type: string
+              description: Start Time
+              example: '10:10'
+            endTime:
+              type: string
+              description: End Time
+              example: '16:45'
+      emailDetails:
+        type: array
+        description: |
+          This is the email details of the customer.        
+        items:
+          type: object
+          properties:
+            preferredEmailTCode:
+              type: string
+              description: Preferred Email Type
+              example: Office
+            email:
+              type: string
+              description: >
+                This field can contain e-mail addresses of the customer. This
+                client contact data is required by CRM. On authorisation of a
+                customer record corresponding email field in the DE.ADDRESS
+                application will be updated with the first email address
+                entered.
+
+                Maximum of 50 characters allowedEmail address of the customer
+              example: daniel.poltorak@gmail.com
+      legalDocuments:
+        type: array
+        description: Defines the document details
+        items:
+          type: object
+          properties:
+            legalDocId:
+              type: string
+              description: Legal Document identifier
+              example: '6187466890'
+            legalDocTypeTCode:
+              type: string
+              description: Legal Document type
+              example: CUIT
+            nameOnId:
+              type: string
+              description: Name as on Legal Document
+              example: CLAUDIO POLTORAK
+            issuingAuthority:
+              type: string
+              description: Legal Document Issuing Authority
+              example: AR
+            issueDate:
+              type: string
+              format: date
+              description: |
+                Defines the date of issue of document.
+                Defaults to today if omitted.
+                8 numeric characters.  Mandatory input.
+              example: '2017-11-30'
+            expirationDate:
+              type: string
+              format: date
+              description: Defines the date of expiry of document.
+              example: '2020-11-30'
+      relationDetails:
+        type: array
+        description: Defines the customer relation details
+        items:
+          type: object
+          properties:
+            relationTCode:
+              type: string
+              description: ''
+              example: '44'
+            customerId:
+              type: string
+              description: >
+                Identifies the Customer to whom the Account belongs.
+
+                This field maintains a link between the Customer and their
+                Accounts. Internal Accounts are recognised by ID's which contain
+                a Currency Code in the first 3 characters. These do not belong
+                to Customers.
+
+                1-10 numeric character Customer Code or 3-10 type MNE (uppercase
+                alpha or numeric or '.') character Customer Mnemonic. (Mandatory
+                input for Customer Accounts not allowed for Internal Accounts).
+                Can only be changed for Nostro accounts. A change is only
+                allowed if the account is not specified in the EXT.ACCT.NO field
+                of the AGENCY record for the old Customer number. Input here
+                will be checked against the account number if an entry has been
+                made in the customer code position on account parameter. This
+                check is for account numbers that contain the customer code, the
+                position within account number being specified by account
+                parameter.
+
+                Customer number can be changed only if the Account category 1000
+                to 9999 is specified in the field range ACCT.CATEG.STR and
+                ACCT.CATEG.END of ACCOUNT.PARAMETER. This will allow change only
+                if the account has joint holders and also allows the change only
+                to a joint holder customer.
+
+                Cannot change the customer if there are LIMITS attached to the
+                account, if it is  single customer account without joint holders
+                and if the account has been input as an AUTO.PAY.ACCOUNT or SUB
+                ACCOUNT in another account with same main customer and currency.
+
+                Will allow change to Nostro accounts even if the account
+                category is specified in ACCOUNT.PARAMETER.
+              example: '100100'
+      overseaTaxes:
+        type: array
+        description: Defines the Tax details of a customer
+        items:
+          type: object
+          properties:
+            taxCountryTCode:
+              type: string
+              description: Country of Tax for Customer
+            tin:
+              type: string
+              description: Tin Number
+            taxReasonTCode:
+              type: string
+              description: Tax Reason
+      overrideDetails:
+        type: array
+        description: Details of Override messages generated
+        items:
+          type: object
+          properties:
+            override:
+              type: string
+              description: >
+                Records the overrides generated during processing of an
+                activity. All the overrides generated in the property class
+                templates (AA.ARR.XXXX, where XXXX - Property Class) for the
+                Activity input are updated in this field.
+
+                Standard override field, Multi-valued.
+      firstSurname:
+        type: string
+        description: First Surname of the customer
+        example: POLTORAK
+      secondSurname:
+        type: string
+        description: Second Surname of the customer
+        example: DANIEL
+      firstName:
+        type: string
+        description: First name of the customer
+        example: CLAUDIO
+      alias:
+        type: string
+        description: Specifies an easy means of referencing Customer
+        example: CLAUD
+      genderTCode:
+        type: string
+        description: Customer's Gender
+        example: MALE
+      maritalStatusTCode:
+        type: string
+        description: Marital Status of the Customer
+        example: SINGLE
+      targetTCode:
+        type: string
+        description: Specifies how the cus is considered by the bank
+        example: '2'
+      nationalityTCode:
+        type: string
+        description: Nationality of the Customer
+        example: AR
+      staffTCode:
+        type: string
+        description: Staff Code
+        example: ACTIVE
+      residenceTCode:
+        type: string
+        description: Residence Code
+        example: AR
+      dateOfBirth:
+        type: string
+        format: date-time
+        description: >
+          Specifies customer's date of birth. This additional client information
+          is required by CRM.
+
+          Standard date format (YYYY-MM-DD). Optional input.  No default value.
+        example: '1988-11-30'
+      languageTCode:
+        type: string
+        description: Language Code
+        example: '2'
+      industryClasificationTCode:
+        type: string
+        description: Industry Classification Code
+        example: '0111'
+      countryOfBirthTCode:
+        type: string
+        description: Country Name of Customer Birth Place
+        example: AR
+      provinceOfBirthTCode:
+        type: string
+        description: Province Name of Customer Birth Place
+        example: AR
+      cityOfBirth:
+        type: string
+        description: Birth City of Customer Birth Place
+        example: Buenos Aires
+      occupationClasificationTCode:
+        type: string
+        description: Occupation Classification Code
+        example: '2000'
+      activityTypeTCode:
+        type: string
+        description: Activity Type Code
+        example: '10'
+      educationLevelTCode:
+        type: string
+        description: Education Level
+        example: Titulado Superior
+      mergeDate:
+        type: string
+        format: date
+        description: Merge Date
+        example: '2017-11-30'
+      recordStatus:
+        type: string
+        description: Record Status
+        example: LIVE
+      currentNumber:
+        type: number
+        description: Record Change Number
+        example: 1
+      inputter:
+        type: string
+        description: Record Inputter Name
+        example: INPUTTER
+      primaryAgentTcode:
+        type: string
+        description: Agent Name
+        example: CLAUDIOD
+      agentGroupTCode:
+        type: string
+        description: Agent Group
+        example: RETAIL
+      isVipTBoolean:
+        type: string
+        description: Vip Flag
+        example: 'YES'
+      communicationTypeTCode:
+        type: string
+        description: Type of Communication
+        example: EMAIL
+  getCustomersRecordidErrorResponse:
+    properties:
+      header:
+        $ref: '#/definitions/screenHeader'
+      body:
+        $ref: '#/definitions/getCustomersRecordidErrorResponseBody'
+    description: getCustomersRecordidErrorResponse
+    type: object
+    example:
+      code: ERROR-001
+      description: No records exists
+  getCustomersRecordidErrorResponseBody:
+    type: object
+    properties:
+      code:
+        type: string
+        description: This code refers the code of the error received
+      description:
+        type: string
+        description: >-
+          This description contains the whole explanation regarding to the code
+          above
+    example:
+      code: ERROR-001
+      description: No records exists
+  payloadHeader:
+    type: object
+    properties:
+      override_acceptId:
+        type: string
+        description: payloadHeader
+    description: payloadHeader
+  postCustomersRecordidUpdate:
+    type: object
+    properties:
+      header:
+        $ref: '#/definitions/payloadHeader'
+      body:
+        $ref: '#/definitions/postCustomersRecordidUpdateBody'
+    description: postCustomersRecordidUpdate
+  postCustomersRecordidUpdateBody:
+    type: object
+    properties:
+      vulnerabilities:
+        type: array
+        items:
+          type: object
+          properties:
+            vulnerabilityTCode:
+              type: string
+              description: Vulnerability Type of Customer
+              example: HEARING.IMPARED
+        description: Vulnerability Type of Customer
+      addresses:
+        type: array
+        description: >
+          This is the actual physical address of where the BIC code relates.
+
+          Wherever possible the uploaded field is reformatted to show the
+          following logical groups of information, in the following sequence
+          (each logical group is delimited by ':')
+
+          . Contact Person
+
+          . Building, Floor,Apartment
+
+          . Street Number, Street Name, Street Cardinal Point
+
+          . Second Street Number,Second Street Name,Second Street Cardinal
+          Point.
+        items:
+          type: object
+          properties:
+            street:
+              type: string
+              description: Street name of Customer's base address
+              example: Av Callao
+            number:
+              type: string
+              description: Building number of Customer's base address
+              example: '892'
+            floor:
+              type: string
+              description: Flat number of Customer's base address
+              example: '2'
+            department:
+              type: string
+              description: Department name of Customer's base address
+              example: A
+            monoblock:
+              type: string
+              description: Building name of Customer's base address
+              example: Palacio Barolo
+            additionalItems1:
+              type: string
+              description: >
+                It is used to store neighbourhood name in case of an Argentinan
+                address
+              example: San Telmo
+            additionalItems2:
+              type: string
+              description: >
+                It is used to store municipality name in case of an Argentinan
+                address
+              example: Alberti
+            countryTCode:
+              type: string
+              description: ''
+              example: AR
+            city:
+              type: string
+              description: ''
+              example: Buenos Aires
+            province:
+              type: string
+              description: ''
+              example: Buenos Aires
+            postCode:
+              type: string
+              description: >
+                Identifies the postal code for customer. On authorisation of a
+                customer record corresponding postal code field in the
+                DE.ADDRESS application will be updated.
+
+                1-35 type S (uppercase alpha or numeric) characters. (Optional
+                input. No default value.)
+              example: '1761'
+            addressTypeTCode:
+              type: string
+              description: ''
+              example: Home
+      telephones:
+        type: array
+        description: |
+          This is the contact details of the customer.
+        items:
+          type: object
+          properties:
+            countryCodeTCode:
+              type: string
+              description: Phone Prefix Code
+              example: AR
+            isPrimaryTelephoneTBoolean:
+              type: string
+              description: Phone Check
+              example: 'YES'
+            telephoneNumber:
+              type: string
+              description: Phone Number
+              example: '92231234567'
+            startTime:
+              type: string
+              description: Start Time
+              example: '10:10'
+            endTime:
+              type: string
+              description: End Time
+              example: '16:45'
+      emailDetails:
+        type: array
+        description: |
+          This is the email details of the customer.        
+        items:
+          type: object
+          properties:
+            preferredEmailTCode:
+              type: string
+              description: Preferred Email Type
+              example: Office
+            email:
+              type: string
+              description: >
+                This field can contain e-mail addresses of the customer. This
+                client contact data is required by CRM. On authorisation of a
+                customer record corresponding email field in the DE.ADDRESS
+                application will be updated with the first email address
+                entered.
+
+                Maximum of 50 characters allowedEmail address of the customer
+              example: daniel.poltorak@gmail.com
+      legalDocuments:
+        type: array
+        description: Defines the document details
+        items:
+          type: object
+          properties:
+            legalDocIdlegalDocId:
+              type: string
+              description: Legal Document identifier
+              example: '6187466890'
+            legalDocTypeTCode:
+              type: string
+              description: Legal Document type
+              example: CUIT
+            nameOnId:
+              type: string
+              description: Name as on Legal Document
+              example: CLAUDIO POLTORAK
+            issuingAuthority:
+              type: string
+              description: Legal Document Issuing Authority
+              example: AR
+            issueDate:
+              type: string
+              format: date
+              description: |
+                Defines the date of issue of document.
+                Defaults to today if omitted.
+                8 numeric characters.  Mandatory input.
+              example: '2017-11-30'
+            expirationDate:
+              type: string
+              format: date
+              description: Defines the date of expiry of document.
+              example: '2020-11-30'
+      relationDetails:
+        type: array
+        description: Defines the customer relation details
+        items:
+          type: object
+          properties:
+            relationTCode:
+              type: string
+              description: ''
+              example: '44'
+            customerId:
+              type: string
+              description: >
+                Identifies the Customer to whom the Account belongs.
+
+                This field maintains a link between the Customer and their
+                Accounts. Internal Accounts are recognised by ID's which contain
+                a Currency Code in the first 3 characters. These do not belong
+                to Customers.
+
+                1-10 numeric character Customer Code or 3-10 type MNE (uppercase
+                alpha or numeric or '.') character Customer Mnemonic. (Mandatory
+                input for Customer Accounts not allowed for Internal Accounts).
+                Can only be changed for Nostro accounts. A change is only
+                allowed if the account is not specified in the EXT.ACCT.NO field
+                of the AGENCY record for the old Customer number. Input here
+                will be checked against the account number if an entry has been
+                made in the customer code position on account parameter. This
+                check is for account numbers that contain the customer code, the
+                position within account number being specified by account
+                parameter.
+
+                Customer number can be changed only if the Account category 1000
+                to 9999 is specified in the field range ACCT.CATEG.STR and
+                ACCT.CATEG.END of ACCOUNT.PARAMETER. This will allow change only
+                if the account has joint holders and also allows the change only
+                to a joint holder customer.
+
+                Cannot change the customer if there are LIMITS attached to the
+                account, if it is  single customer account without joint holders
+                and if the account has been input as an AUTO.PAY.ACCOUNT or SUB
+                ACCOUNT in another account with same main customer and currency.
+
+                Will allow change to Nostro accounts even if the account
+                category is specified in ACCOUNT.PARAMETER.
+              example: '100100'
+      overseaTaxes:
+        type: array
+        description: Defines the Tax details of a customer
+        items:
+          type: object
+          properties:
+            taxCountryTCode:
+              type: string
+              description: Country of Tax for Customer
+            tin:
+              type: string
+              description: Tin Number
+            taxReasonTCode:
+              type: string
+              description: Tax Reason
+      firstSurname:
+        type: string
+        description: First Surname of the customer
+        example: POLTORAK
+      secondSurname:
+        type: string
+        description: Second Surname of the customer
+        example: DANIEL
+      firstName:
+        type: string
+        description: First name of the customer
+        example: CLAUDIO
+      alias:
+        type: string
+        description: Specifies an easy means of referencing Customer
+        example: CLAUD
+      genderTCode:
+        type: string
+        description: Customer's Gender
+        example: MALE
+      maritalStatusTCode:
+        type: string
+        description: Marital Status of the Customer
+        example: SINGLE
+      targetTCode:
+        type: string
+        description: Specifies how the cus is considered by the bank
+        example: '2'
+      nationalityTCode:
+        type: string
+        description: Nationality of the Customer
+        example: AR
+      staffTCode:
+        type: string
+        description: Staff Code
+        example: ACTIVE
+      residenceTCode:
+        type: string
+        description: Residence Code
+        example: AR
+      dateOfBirth:
+        type: string
+        format: date-time
+        description: >
+          Specifies customer's date of birth. This additional client information
+          is required by CRM.
+
+          Standard date format (YYYY-MM-DD). Optional input.  No default value.
+        example: '1988-11-30'
+      languageTCode:
+        type: string
+        description: Language Code
+        example: '2'
+      industryClasificationTCode:
+        type: string
+        description: Industry Classification Code
+        example: '0111'
+      countryOfBirthTCode:
+        type: string
+        description: Country Name of Customer Birth Place
+        example: AR
+      provinceOfBirthTCode:
+        type: string
+        description: Province Name of Customer Birth Place
+        example: AR
+      cityOfBirth:
+        type: string
+        description: Birth City of Customer Birth Place
+        example: Buenos Aires
+      occupationClasificationTCode:
+        type: string
+        description: Occupation Classification Code
+        example: '2000'
+      activityTypeTCode:
+        type: string
+        description: Activity Type Code
+        example: '10'
+      educationLevelTCode:
+        type: string
+        description: Education Level
+        example: Titulado Superior
+      primaryAgentTCode:
+        type: string
+        description: Agent Name
+        example: CLAUDIOD
+      agentGroupTCode:
+        type: string
+        description: Agent Group
+        example: RETAIL
+      isVipTBoolean:
+        type: string
+        description: Vip Flag
+        example: 'YES'
+      communicationTypeTCode:
+        type: string
+        description: Type of Communication
+        example: EMAIL
+  postCustomersRecordidUpdateResponse:
+    type: object
+    properties:
+      header:
+        $ref: '#/definitions/screenHeader'
+      body:
+        $ref: '#/definitions/postCustomersRecordidUpdateResponseBody'
+    description: postCustomersRecordidUpdateResponse
+  postCustomersRecordidUpdateResponseBody:
+    type: object
+    properties:
+      vulnerabilities:
+        type: array
+        items:
+          type: object
+          properties:
+            vulnerabilityTCode:
+              type: string
+              description: Vulnerability Type of Customer
+              example: HEARING.IMPARED
+        description: Vulnerability Type of Customer
+      addresses:
+        type: array
+        description: >
+          This is the actual physical address of where the BIC code relates.
+
+          Wherever possible the uploaded field is reformatted to show the
+          following logical groups of information, in the following sequence
+          (each logical group is delimited by ':')
+
+          . Contact Person
+
+          . Building, Floor,Apartment
+
+          . Street Number, Street Name, Street Cardinal Point
+
+          . Second Street Number,Second Street Name,Second Street Cardinal
+          Point.
+        items:
+          type: object
+          properties:
+            street:
+              type: string
+              description: Street name of Customer's base address
+              example: Av Callao
+            number:
+              type: string
+              description: Building number of Customer's base address
+              example: '892'
+            floor:
+              type: string
+              description: Flat number of Customer's base address
+              example: '2'
+            department:
+              type: string
+              description: Department name of Customer's base address
+              example: A
+            monoblock:
+              type: string
+              description: Building name of Customer's base address
+              example: Palacio Barolo
+            additionalItems1:
+              type: string
+              description: >
+                It is used to store neighbourhood name in case of an Argentinan
+                address
+              example: San Telmo
+            additionalItems2:
+              type: string
+              description: >
+                It is used to store municipality name in case of an Argentinan
+                address
+              example: Alberti
+            countryTCode:
+              type: string
+              description: ''
+              example: AR
+            city:
+              type: string
+              description: ''
+              example: Buenos Aires
+            province:
+              type: string
+              description: ''
+              example: Buenos Aires
+            postCode:
+              type: string
+              description: >
+                Identifies the postal code for customer. On authorisation of a
+                customer record corresponding postal code field in the
+                DE.ADDRESS application will be updated.
+
+                1-35 type S (uppercase alpha or numeric) characters. (Optional
+                input. No default value.)
+              example: '1761'
+            addressTypeTCode:
+              type: string
+              description: ''
+              example: Home
+      telephones:
+        type: array
+        description: |
+          This is the contact details of the customer.
+        items:
+          type: object
+          properties:
+            countryCodeTCode:
+              type: string
+              description: Phone Prefix Code
+              example: AR
+            isPrimaryTelephoneTBoolean:
+              type: string
+              description: Phone Check
+              example: 'YES'
+            telephoneNumber:
+              type: string
+              description: Phone Number
+              example: '92231234567'
+            fullTelephoneNumber:
+              type: string
+              description: Full Telephone Number
+              example: '+5492231234567'
+            startTime:
+              type: string
+              description: Start Time
+              example: '10:10'
+            endTime:
+              type: string
+              description: End Time
+              example: '16:45'
+      emailDetails:
+        type: array
+        description: |
+          This is the email details of the customer.        
+        items:
+          type: object
+          properties:
+            preferredEmailTCode:
+              type: string
+              description: Preferred Email Type
+              example: Office
+            email:
+              type: string
+              description: >
+                This field can contain e-mail addresses of the customer. This
+                client contact data is required by CRM. On authorisation of a
+                customer record corresponding email field in the DE.ADDRESS
+                application will be updated with the first email address
+                entered.
+
+                Maximum of 50 characters allowedEmail address of the customer
+              example: daniel.poltorak@gmail.com
+      legalDocuments:
+        type: array
+        description: Defines the document details
+        items:
+          type: object
+          properties:
+            legalDocId:
+              type: string
+              description: Legal Document identifier
+              example: '6187466890'
+            legalDocTypeTCode:
+              type: string
+              description: Legal Document type
+              example: CUIT
+            nameOnId:
+              type: string
+              description: Name as on Legal Document
+              example: CLAUDIO POLTORAK
+            issuingAuthority:
+              type: string
+              description: Legal Document Issuing Authority
+              example: AR
+            issueDate:
+              type: string
+              format: date
+              description: |
+                Defines the date of issue of document.
+                Defaults to today if omitted.
+                8 numeric characters.  Mandatory input.
+              example: '2017-11-30'
+            expirationDate:
+              type: string
+              format: date
+              description: Defines the date of expiry of document.
+              example: '2020-11-30'
+      relationDetails:
+        type: array
+        description: Defines the customer relation details
+        items:
+          type: object
+          properties:
+            relationTCode:
+              type: string
+              description: ''
+              example: '44'
+            customerId:
+              type: string
+              description: >
+                Identifies the Customer to whom the Account belongs.
+
+                This field maintains a link between the Customer and their
+                Accounts. Internal Accounts are recognised by ID's which contain
+                a Currency Code in the first 3 characters. These do not belong
+                to Customers.
+
+                1-10 numeric character Customer Code or 3-10 type MNE (uppercase
+                alpha or numeric or '.') character Customer Mnemonic. (Mandatory
+                input for Customer Accounts not allowed for Internal Accounts).
+                Can only be changed for Nostro accounts. A change is only
+                allowed if the account is not specified in the EXT.ACCT.NO field
+                of the AGENCY record for the old Customer number. Input here
+                will be checked against the account number if an entry has been
+                made in the customer code position on account parameter. This
+                check is for account numbers that contain the customer code, the
+                position within account number being specified by account
+                parameter.
+
+                Customer number can be changed only if the Account category 1000
+                to 9999 is specified in the field range ACCT.CATEG.STR and
+                ACCT.CATEG.END of ACCOUNT.PARAMETER. This will allow change only
+                if the account has joint holders and also allows the change only
+                to a joint holder customer.
+
+                Cannot change the customer if there are LIMITS attached to the
+                account, if it is  single customer account without joint holders
+                and if the account has been input as an AUTO.PAY.ACCOUNT or SUB
+                ACCOUNT in another account with same main customer and currency.
+
+                Will allow change to Nostro accounts even if the account
+                category is specified in ACCOUNT.PARAMETER.
+              example: '100100'
+      overseaTaxes:
+        type: array
+        description: Defines the Tax details of a customer
+        items:
+          type: object
+          properties:
+            taxCountryTCode:
+              type: string
+              description: Country of Tax for Customer
+            tin:
+              type: string
+              description: Tin Number
+            taxReasonTCode:
+              type: string
+              description: Tax Reason
+      overrideDetails:
+        type: array
+        description: Details of Override messages generated
+        items:
+          type: object
+          properties:
+            override:
+              type: string
+              description: >
+                Records the overrides generated during processing of an
+                activity. All the overrides generated in the property class
+                templates (AA.ARR.XXXX, where XXXX - Property Class) for the
+                Activity input are updated in this field.
+
+                Standard override field, Multi-valued.
+      firstSurname:
+        type: string
+        description: First Surname of the customer
+        example: POLTORAK
+      secondSurname:
+        type: string
+        description: Second Surname of the customer
+        example: DANIEL
+      firstName:
+        type: string
+        description: First name of the customer
+        example: CLAUDIO
+      alias:
+        type: string
+        description: Specifies an easy means of referencing Customer
+        example: CLAUD
+      genderTCode:
+        type: string
+        description: Customer's Gender
+        example: MALE
+      maritalStatusTCode:
+        type: string
+        description: Marital Status of the Customer
+        example: SINGLE
+      targetTCode:
+        type: string
+        description: Specifies how the cus is considered by the bank
+        example: '2'
+      nationalityTCode:
+        type: string
+        description: Nationality of the Customer
+        example: AR
+      staffTCode:
+        type: string
+        description: Staff Code
+        example: ACTIVE
+      residenceTCode:
+        type: string
+        description: Residence Code
+        example: AR
+      dateOfBirth:
+        type: string
+        format: date-time
+        description: >
+          Specifies customer's date of birth. This additional client information
+          is required by CRM.
+
+          Standard date format (YYYY-MM-DD). Optional input.  No default value.
+        example: '1988-11-30'
+      languageTCode:
+        type: string
+        description: Language Code
+        example: '2'
+      industryClasificationTCode:
+        type: string
+        description: Industry Classification Code
+        example: '0111'
+      countryOfBirthTCode:
+        type: string
+        description: Country Name of Customer Birth Place
+        example: AR
+      provinceOfBirthTCode:
+        type: string
+        description: Province Name of Customer Birth Place
+        example: AR
+      cityOfBirth:
+        type: string
+        description: Birth City of Customer Birth Place
+        example: Buenos Aires
+      occupationClasificationTCode:
+        type: string
+        description: Occupation Classification Code
+        example: '2000'
+      activityTypeTCode:
+        type: string
+        description: Activity Type Code
+        example: '10'
+      educationLevelTCode:
+        type: string
+        description: Education Level
+        example: Titulado Superior
+      mergeDate:
+        type: string
+        format: date
+        description: Merge Date
+        example: '2017-11-30'
+      recordStatus:
+        type: string
+        description: Record Status
+        example: LIVE
+      currentNumber:
+        type: number
+        description: Record Change Number
+        example: 1
+      inputter:
+        type: string
+        description: Record Inputter Name
+        example: INPUTTER
+      primaryAgentTCode:
+        type: string
+        description: Agent Name
+        example: CLAUDIOD
+      agentGroupTCode:
+        type: string
+        description: Agent Group
+        example: RETAIL
+      isVipTBoolean:
+        type: string
+        description: Vip Flag
+        example: 'YES'
+      communicationTypeTCode:
+        type: string
+        description: Type of Communication
+        example: POSTAL
+  postCustomersRecordidUpdateErrorResponse:
+    type: object
+    properties:
+      header:
+        $ref: '#/definitions/screenHeader'
+      body:
+        $ref: '#/definitions/postCustomersRecordidUpdateErrorResponseBody'
+    description: postCustomersRecordidUpdateErrorResponse
+  postCustomersRecordidUpdateErrorResponseBody:
+    type: object
+    properties:
+      code:
+        type: string
+        description: This code refers the code of the error received
+      description:
+        type: string
+        description: >-
+          This description contains the whole explanation regarding to the code
+          above
+    description: Record doesn't exists
+    example:
+      code: ERROR-001
+      description: Record doesn't exists
+  postCustomers:
+    type: object
+    properties:
+      header:
+        $ref: '#/definitions/payloadHeader'
+      body:
+        $ref: '#/definitions/postCustomersBody'
+  postCustomersBody:
+    type: object
+    properties:
+      groupsDetails:
+        type: array
+        description: Group details
+        items:
+          type: object
+          properties:
+            groupsTCode:
+              type: string
+              description: ''
+              example: Group 1
+      vulnerabilities:
+        type: array
+        items:
+          type: object
+          properties:
+            vulnerabilityTCode:
+              type: string
+              description: Vulnerability Type of Customer
+              example: HEARING.IMPARED
+        description: Vulnerability Type of Customer
+      addresses:
+        type: array
+        description: >
+          This is the actual physical address of where the BIC code relates.
+
+          Wherever possible the uploaded field is reformatted to show the
+          following logical groups of information, in the following sequence
+          (each logical group is delimited by ':')
+
+          . Contact Person
+
+          . Building, Floor,Apartment
+
+          . Street Number, Street Name, Street Cardinal Point
+
+          . Second Street Number,Second Street Name,Second Street Cardinal
+          Point.
+        items:
+          type: object
+          properties:
+            street:
+              type: string
+              description: Street name of Customer's base address
+              example: Av Callao
+            number:
+              type: string
+              description: Building number of Customer's base address
+              example: '892'
+            floor:
+              type: string
+              description: Flat number of Customer's base address
+              example: '2'
+            department:
+              type: string
+              description: Department name of Customer's base address
+              example: A
+            monoblock:
+              type: string
+              description: Building name of Customer's base address
+              example: Palacio Barolo
+            additionalItems1:
+              type: string
+              description: >
+                It is used to store neighbourhood name in case of an Argentinan
+                address
+              example: San Telmo
+            additionalItems2:
+              type: string
+              description: >
+                It is used to store municipality name in case of an Argentinan
+                address
+              example: Alberti
+            countryTCode:
+              type: string
+              description: ''
+              example: AR
+            city:
+              type: string
+              description: ''
+              example: Buenos Aires
+            province:
+              type: string
+              description: ''
+              example: Buenos Aires
+            postCode:
+              type: string
+              description: >
+                Identifies the postal code for customer. On authorisation of a
+                customer record corresponding postal code field in the
+                DE.ADDRESS application will be updated.
+
+                1-35 type S (uppercase alpha or numeric) characters. (Optional
+                input. No default value.)
+              example: '1761'
+            addressTypeTCode:
+              type: string
+              description: ''
+              example: Home
+      telephones:
+        type: array
+        description: |
+          This is the contact details of the customer.
+        items:
+          type: object
+          properties:
+            countryCodeTCode:
+              type: string
+              description: Phone Prefix Code
+              example: AR
+            isPrimaryTelephoneTBoolean:
+              type: string
+              description: Phone Check
+              example: 'YES'
+            telephoneNumber:
+              type: string
+              description: Phone Number
+              example: '92231234567'
+            startTime:
+              type: string
+              description: Start Time
+              example: '10:10'
+            endTime:
+              type: string
+              description: End Time
+              example: '16:45'
+      emailDetails:
+        type: array
+        description: |
+          This is the email details of the customer.        
+        items:
+          type: object
+          properties:
+            preferredEmailTCode:
+              type: string
+              description: Preferred Email Type
+              example: Office
+            email:
+              type: string
+              description: >
+                This field can contain e-mail addresses of the customer. This
+                client contact data is required by CRM. On authorisation of a
+                customer record corresponding email field in the DE.ADDRESS
+                application will be updated with the first email address
+                entered.
+
+                Maximum of 50 characters allowedEmail address of the customer
+              example: daniel.poltorak@gmail.com
+      legalDocuments:
+        type: array
+        description: Defines the document details
+        items:
+          type: object
+          properties:
+            legalDocId:
+              type: string
+              description: Legal Document identifier
+              example: '6187466890'
+            legalDocTypeTCode:
+              type: string
+              description: Legal Document type
+              example: CUIT
+            nameOnId:
+              type: string
+              description: Name as on Legal Document
+              example: CLAUDIO POLTORAK
+            issuingAuthority:
+              type: string
+              description: Legal Document Issuing Authority
+              example: AR
+            issueDate:
+              type: string
+              format: date
+              description: |
+                Defines the date of issue of document.
+                Defaults to today if omitted.
+                8 numeric characters.  Mandatory input.
+              example: '2017-11-30'
+            expirationDate:
+              type: string
+              format: date
+              description: Defines the date of expiry of document.
+              example: '2020-11-30'
+      relationDetails:
+        type: array
+        description: Defines the customer relation details
+        items:
+          type: object
+          properties:
+            relationTCode:
+              type: string
+              description: ''
+              example: '44'
+            customerId:
+              type: string
+              description: >
+                Identifies the Customer to whom the Account belongs.
+
+                This field maintains a link between the Customer and their
+                Accounts. Internal Accounts are recognised by ID's which contain
+                a Currency Code in the first 3 characters. These do not belong
+                to Customers.
+
+                1-10 numeric character Customer Code or 3-10 type MNE (uppercase
+                alpha or numeric or '.') character Customer Mnemonic. (Mandatory
+                input for Customer Accounts not allowed for Internal Accounts).
+                Can only be changed for Nostro accounts. A change is only
+                allowed if the account is not specified in the EXT.ACCT.NO field
+                of the AGENCY record for the old Customer number. Input here
+                will be checked against the account number if an entry has been
+                made in the customer code position on account parameter. This
+                check is for account numbers that contain the customer code, the
+                position within account number being specified by account
+                parameter.
+
+                Customer number can be changed only if the Account category 1000
+                to 9999 is specified in the field range ACCT.CATEG.STR and
+                ACCT.CATEG.END of ACCOUNT.PARAMETER. This will allow change only
+                if the account has joint holders and also allows the change only
+                to a joint holder customer.
+
+                Cannot change the customer if there are LIMITS attached to the
+                account, if it is  single customer account without joint holders
+                and if the account has been input as an AUTO.PAY.ACCOUNT or SUB
+                ACCOUNT in another account with same main customer and currency.
+
+                Will allow change to Nostro accounts even if the account
+                category is specified in ACCOUNT.PARAMETER.
+              example: '100100'
+      overseaTaxes:
+        type: array
+        description: Defines the Tax details of a customer
+        items:
+          type: object
+          properties:
+            taxCountryTCode:
+              type: string
+              description: Country of Tax for Customer
+            tin:
+              type: string
+              description: Tin Number
+            taxReasonTCode:
+              type: string
+              description: Tax Reason
+      firstSurname:
+        type: string
+        description: First Surname of the customer
+        example: POLTORAK
+      secondSurname:
+        type: string
+        description: Second Surname of the customer
+        example: DANIEL
+      firstName:
+        type: string
+        description: First name of the customer
+        example: CLAUDIO
+      alias:
+        type: string
+        description: Specifies an easy means of referencing Customer
+        example: CLAUD
+      genderTCode:
+        type: string
+        description: Customer's Gender
+        example: MALE
+      maritalStatusTCode:
+        type: string
+        description: Marital Status of the Customer
+        example: SINGLE
+      targetTCode:
+        type: string
+        description: Specifies how the cus is considered by the bank
+        example: '2'
+      nationalityTCode:
+        type: string
+        description: Nationality of the Customer
+        example: AR
+      staffTCode:
+        type: string
+        description: Staff Code
+        example: ACTIVE
+      residenceTCode:
+        type: string
+        description: Residence Code
+        example: AR
+      dateOfBirth:
+        type: string
+        format: date-time
+        description: >
+          Specifies customer's date of birth. This additional client information
+          is required by CRM.
+
+          Standard date format (YYYY-MM-DD). Optional input.  No default value.
+        example: '1988-11-30'
+      languageTCode:
+        type: string
+        description: Language Code
+        example: '2'
+      industryClasificationTCode:
+        type: string
+        description: Industry Classification Code
+        example: '0111'
+      countryOfBirthTCode:
+        type: string
+        description: Country Name of Customer Birth Place
+        example: AR
+      provinceOfBirthTCode:
+        type: string
+        description: Province Name of Customer Birth Place
+        example: AR
+      cityOfBirth:
+        type: string
+        description: Birth City of Customer Birth Place
+        example: Buenos Aires
+      occupationClasificationTCode:
+        type: string
+        description: Occupation Classification Code
+        example: '2000'
+      activityTypeTCode:
+        type: string
+        description: Activity Type Code
+        example: '10'
+      educationLevelTCode:
+        type: string
+        description: Education Level
+        example: Titulado Superior
+      primaryAgentTCode:
+        type: string
+        description: Agent Name
+        example: CLAUDIOD
+      agentGroupTCode:
+        type: string
+        description: Agent Group
+        example: RETAIL
+      isVipTBoolean:
+        type: string
+        description: Vip Flag
+        example: 'YES'
+      communicationTypeTCode:
+        type: string
+        description: Type of Communication
+        example: EMAIL
+  postCustomersResponse:
+    type: object
+    properties:
+      header:
+        $ref: '#/definitions/screenHeader'
+      body:
+        $ref: '#/definitions/postCustomersResponseBody'
+    description: PostCustomersResponse
+  postCustomersResponseBody:
+    type: object
+    properties:
+      groupsDetails:
+        type: array
+        items:
+          type: object
+          properties:
+            groupsTCode:
+              type: string
+              description: ''
+              example: Group 1
+      vulnerabilities:
+        type: array
+        items:
+          type: object
+          properties:
+            vulnerabilityTCode:
+              type: string
+              description: Vulnerability Type of Customer
+              example: HEARING.IMPARED
+        description: Vulnerability Type of Customer
+      addresses:
+        type: array
+        description: >
+          This is the actual physical address of where the BIC code relates.
+
+          Wherever possible the uploaded field is reformatted to show the
+          following logical groups of information, in the following sequence
+          (each logical group is delimited by ':')
+
+          . Contact Person
+
+          . Building, Floor,Apartment
+
+          . Street Number, Street Name, Street Cardinal Point
+
+          . Second Street Number,Second Street Name,Second Street Cardinal
+          Point.
+        items:
+          type: object
+          properties:
+            street:
+              type: string
+              description: Street name of Customer's base address
+              example: Av Callao
+            number:
+              type: string
+              description: Building number of Customer's base address
+              example: '892'
+            floor:
+              type: string
+              description: Flat number of Customer's base address
+              example: '2'
+            department:
+              type: string
+              description: Department name of Customer's base address
+              example: A
+            monoblock:
+              type: string
+              description: Building name of Customer's base address
+              example: Palacio Barolo
+            additionalItems1:
+              type: string
+              description: >
+                It is used to store neighbourhood name in case of an Argentinan
+                address
+              example: San Telmo
+            additionalItems2:
+              type: string
+              description: >
+                It is used to store municipality name in case of an Argentinan
+                address
+              example: Alberti
+            countryTCode:
+              type: string
+              description: ''
+              example: AR
+            city:
+              type: string
+              description: ''
+              example: Buenos Aires
+            province:
+              type: string
+              description: ''
+              example: Buenos Aires
+            postCode:
+              type: string
+              description: >
+                Identifies the postal code for customer. On authorisation of a
+                customer record corresponding postal code field in the
+                DE.ADDRESS application will be updated.
+
+                1-35 type S (uppercase alpha or numeric) characters. (Optional
+                input. No default value.)
+              example: '1761'
+            addressTypeTCode:
+              type: string
+              description: ''
+              example: Home
+      telephones:
+        type: array
+        description: |
+          This is the contact details of the customer.
+        items:
+          type: object
+          properties:
+            countryCodeTCode:
+              type: string
+              description: Phone Prefix Code
+              example: AR
+            isPrimaryTelephoneTBoolean:
+              type: string
+              description: Phone Check
+              example: 'YES'
+            telephoneNumber:
+              type: string
+              description: Phone Number
+              example: '92231234567'
+            fullTelephoneNumber:
+              type: string
+              description: Full Telephone Number
+              example: '+5492231234567'
+            startTime:
+              type: string
+              description: Start Time
+              example: '10:10'
+            endTime:
+              type: string
+              description: End Time
+              example: '16:45'
+      emailDetails:
+        type: array
+        description: |
+          This is the email details of the customer.        
+        items:
+          type: object
+          properties:
+            preferredEmailTCode:
+              type: string
+              description: Preferred Email Type
+              example: Office
+            email:
+              type: string
+              description: >
+                This field can contain e-mail addresses of the customer. This
+                client contact data is required by CRM. On authorisation of a
+                customer record corresponding email field in the DE.ADDRESS
+                application will be updated with the first email address
+                entered.
+
+                Maximum of 50 characters allowedEmail address of the customer
+              example: daniel.poltorak@gmail.com
+      legalDocuments:
+        type: array
+        description: Defines the document details
+        items:
+          type: object
+          properties:
+            legalDocId:
+              type: string
+              description: Legal Document identifier
+              example: '6187466890'
+            legalDocTypeTCode:
+              type: string
+              description: Legal Document type
+              example: CUIT
+            nameOnId:
+              type: string
+              description: Name as on Legal Document
+              example: CLAUDIO POLTORAK
+            issuingAuthority:
+              type: string
+              description: Legal Document Issuing Authority
+              example: AR
+            issueDate:
+              type: string
+              format: date
+              description: |
+                Defines the date of issue of document.
+                Defaults to today if omitted.
+                8 numeric characters.  Mandatory input.
+              example: '2017-11-30'
+            expirationDate:
+              type: string
+              format: date
+              description: Defines the date of expiry of document.
+              example: '2020-11-30'
+      relationDetails:
+        type: array
+        description: Defines the customer relation details
+        items:
+          type: object
+          properties:
+            relationTCode:
+              type: string
+              description: ''
+              example: '44'
+            customerId:
+              type: string
+              description: >
+                Identifies the Customer to whom the Account belongs.
+
+                This field maintains a link between the Customer and their
+                Accounts. Internal Accounts are recognised by ID's which contain
+                a Currency Code in the first 3 characters. These do not belong
+                to Customers.
+
+                1-10 numeric character Customer Code or 3-10 type MNE (uppercase
+                alpha or numeric or '.') character Customer Mnemonic. (Mandatory
+                input for Customer Accounts not allowed for Internal Accounts).
+                Can only be changed for Nostro accounts. A change is only
+                allowed if the account is not specified in the EXT.ACCT.NO field
+                of the AGENCY record for the old Customer number. Input here
+                will be checked against the account number if an entry has been
+                made in the customer code position on account parameter. This
+                check is for account numbers that contain the customer code, the
+                position within account number being specified by account
+                parameter.
+
+                Customer number can be changed only if the Account category 1000
+                to 9999 is specified in the field range ACCT.CATEG.STR and
+                ACCT.CATEG.END of ACCOUNT.PARAMETER. This will allow change only
+                if the account has joint holders and also allows the change only
+                to a joint holder customer.
+
+                Cannot change the customer if there are LIMITS attached to the
+                account, if it is  single customer account without joint holders
+                and if the account has been input as an AUTO.PAY.ACCOUNT or SUB
+                ACCOUNT in another account with same main customer and currency.
+
+                Will allow change to Nostro accounts even if the account
+                category is specified in ACCOUNT.PARAMETER.
+              example: '100100'
+      overseaTaxes:
+        type: array
+        description: Defines the Tax details of a customer
+        items:
+          type: object
+          properties:
+            taxCountryTCode:
+              type: string
+              description: Country of Tax for Customer
+            tin:
+              type: string
+              description: Tin Number
+            taxReasonTCode:
+              type: string
+              description: Tax Reason
+      overrideDetails:
+        type: array
+        description: Details of Override messages generated
+        items:
+          type: object
+          properties:
+            override:
+              type: string
+              description: >
+                Records the overrides generated during processing of an
+                activity. All the overrides generated in the property class
+                templates (AA.ARR.XXXX, where XXXX - Property Class) for the
+                Activity input are updated in this field.
+
+                Standard override field, Multi-valued.
+      firstSurname:
+        type: string
+        description: First Surname of the customer
+        example: POLTORAK
+      secondSurname:
+        type: string
+        description: Second Surname of the customer
+        example: DANIEL
+      firstName:
+        type: string
+        description: First name of the customer
+        example: CLAUDIO
+      alias:
+        type: string
+        description: Specifies an easy means of referencing Customer
+        example: CLAUD
+      genderTCode:
+        type: string
+        description: Customer's Gender
+        example: MALE
+      maritalStatusTCode:
+        type: string
+        description: Marital Status of the Customer
+        example: SINGLE
+      targetTCode:
+        type: string
+        description: Specifies how the cus is considered by the bank
+        example: '2'
+      nationalityTCode:
+        type: string
+        description: Nationality of the Customer
+        example: AR
+      staffTCode:
+        type: string
+        description: Staff Code
+        example: ACTIVE
+      residenceTCode:
+        type: string
+        description: Residence Code
+        example: AR
+      dateOfBirth:
+        type: string
+        format: date-time
+        description: >
+          Specifies customer's date of birth. This additional client information
+          is required by CRM.
+
+          Standard date format (YYYY-MM-DD). Optional input.  No default value.
+        example: '1988-11-30'
+      languageTCode:
+        type: string
+        description: Language Code
+        example: '2'
+      industryClasificationTCode:
+        type: string
+        description: Industry Classification Code
+        example: '0111'
+      countryOfBirthTCode:
+        type: string
+        description: Country Name of Customer Birth Place
+        example: AR
+      provinceOfBirthTCode:
+        type: string
+        description: Province Name of Customer Birth Place
+        example: AR
+      cityOfBirth:
+        type: string
+        description: Birth City of Customer Birth Place
+        example: Buenos Aires
+      occupationClasificationTCode:
+        type: string
+        description: Occupation Classification Code
+        example: '2000'
+      activityTypeTCode:
+        type: string
+        description: Activity Type Code
+        example: '10'
+      educationLevelTCode:
+        type: string
+        description: Education Level
+        example: Titulado Superior
+      mergeDate:
+        type: string
+        format: date
+        description: Merge Date
+        example: '2017-11-30'
+      recordStatus:
+        type: string
+        description: Record Status
+        example: LIVE
+      currentNumber:
+        type: number
+        description: Record Change Number
+        example: 1
+      inputter:
+        type: string
+        description: Record Inputter Name
+        example: INPUTTER
+      primaryAgentTCode:
+        type: string
+        description: Agent Name
+        example: CLAUDIOD
+      agentGroupTCode:
+        type: string
+        description: Agent Group
+        example: RETAIL
+      isVipTBoolean:
+        type: string
+        description: Vip Flag
+        example: 'YES'
+      communicationTypeTCode:
+        type: string
+        description: Type of Communication
+        example: POSTAL
+  postCustomersErrorResponse:
+    type: object
+    properties:
+      header:
+        $ref: '#/definitions/screenHeader'
+      body:
+        $ref: '#/definitions/postCustomersErrorResponseBody'
+    description: postCustomersErrorResponse
+  postCustomersErrorResponseBody:
+    type: object
+    properties:
+      code:
+        type: string
+        description: This code refers the code of the error received
+        example:
+          description: This code refers the code of the error received
+      description:
+        type: string
+        description: >-
+          This description contains the whole explanation regarding to the code
+          above
+        example:
+          description: This code refers the code of the error received
+    example:
+      code: ERROR-001
+      description: Cannot create Customer
+  queryHeader:
+    type: object
+    properties:
+      audit:
+        type: object
+        properties:
+          T24_time:
+            type: integer
+            format: int32
+          parse_time:
+            type: integer
+            format: int32
+      page_size:
+        type: integer
+        format: int32
+      page_start:
+        type: integer
+        format: int32
+      total_size:
+        type: integer
+        format: int32
+      page_token:
+        type: string
+    description: Header for query
+  getCustomersResponse:
+    type: object
+    properties:
+      header:
+        $ref: '#/definitions/queryHeader'
+      body:
+        $ref: '#/definitions/getCustomersResponseBody'
+    description: getCustomersResponse
+  getCustomersResponseBody:
+    type: array
+    items:
+      type: object
+      properties:
+        customerId:
+          type: string
+          description: >
+            Identifies the Customer to whom the Account belongs.
+
+            This field maintains a link between the Customer and their Accounts.
+            Internal Accounts are recognised by ID's which contain a Currency
+            Code in the first 3 characters. These do not belong to Customers.
+
+            1-10 numeric character Customer Code or 3-10 type MNE (uppercase
+            alpha or numeric or '.') character Customer Mnemonic. (Mandatory
+            input for Customer Accounts not allowed for Internal Accounts). Can
+            only be changed for Nostro accounts. A change is only allowed if the
+            account is not specified in the EXT.ACCT.NO field of the AGENCY
+            record for the old Customer number. Input here will be checked
+            against the account number if an entry has been made in the customer
+            code position on account parameter. This check is for account
+            numbers that contain the customer code, the position within account
+            number being specified by account parameter.
+
+            Customer number can be changed only if the Account category 1000 to
+            9999 is specified in the field range ACCT.CATEG.STR and
+            ACCT.CATEG.END of ACCOUNT.PARAMETER. This will allow change only if
+            the account has joint holders and also allows the change only to a
+            joint holder customer.
+
+            Cannot change the customer if there are LIMITS attached to the
+            account, if it is  single customer account without joint holders and
+            if the account has been input as an AUTO.PAY.ACCOUNT or SUB ACCOUNT
+            in another account with same main customer and currency.
+
+            Will allow change to Nostro accounts even if the account category is
+            specified in ACCOUNT.PARAMETER.
+          maxLength: 10
+          example: '100026'
+        firstName:
+          type: string
+          description: First name of Customer
+          maxLength: 35
+          example: CLAUDIO
+        firstSurname:
+          type: string
+          description: First Surname of Customer
+          maxLength: 35
+          example: POLTORAK
+        secondSurname:
+          type: string
+          description: Second Surname of Customer
+          maxLength: 35
+          example: DANIEL
+        dateOfBirth:
+          type: string
+          format: date-time
+          description: >
+            Specifies customer's date of birth. This additional client
+            information is required by CRM.
+
+            Standard date format (YYYY-MM-DD). Optional input.  No default
+            value.
+
+          example: '1988-11-30'
+        legalDocuments:
+          type: array
+          description: Defines the document details
+          items:
+            type: object
+            properties:
+              legalDocId:
+                type: string
+                description: Legal Document Identifier Number
+                maxLength: 35
+                example: '600018690'
+              legalDocTypeTCode:
+                type: string
+                description: Legal Document Type
+                maxLength: 35
+                example: CUIT
+  getCustomersErrorResponse:
+    type: object
+    properties:
+      header:
+        $ref: '#/definitions/queryHeader'
+      body:
+        $ref: '#/definitions/getCustomersErrorResponseBody'
+    description: getCustomersErrorResponse
+  getCustomersErrorResponseBody:
+    type: object
+    properties:
+      code:
+        type: string
+        description: This code refers the code of the error received
+        example:
+          description: This code refers the code of the error received
+      description:
+        type: string
+        description: >-
+          This description contains the whole explanation regarding to the code
+          above
+        example:
+          description: This code refers the code of the error received
+    example:
+      code: ERROR-001
+      description: No record exists

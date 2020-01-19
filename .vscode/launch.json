@@ -1,0 +1,62 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to Remote",
+      "address": "localhost",
+      "port": 4567,          
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "hello",    
+      "program": "${workspaceFolder}/projects/project-a/node_modules/.bin/sls",
+      "runtimeExecutable": "node",
+      "args": [
+        "invoke",
+        "local",
+        "-f",
+        "hello", 
+        "--data",
+        "{}",
+        "--no-build"        
+      ],
+      "runtimeArgs": [
+        "--lazy"
+      ],
+      "outFiles": [
+        "${workspaceFolder}/projects/project-a/.webpack/**/*.js"
+      ],
+      "console": "integratedTerminal",
+      "smartStep": true,   
+      "sourceMaps": true,
+      "protocol": "inspector",
+      "stopOnEntry": false,     
+      "cwd": "${workspaceFolder}/projects/project-a"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Serverless Offline Project A",
+      "program": "${workspaceFolder}/projects/project-a/node_modules/.bin/sls",
+      "args": [ "offline", "--noTimeout", "--dontPrintOutput", "--stage=dev" ],
+      "sourceMaps": true,
+      "runtimeArgs": [
+        "--lazy"
+      ],
+      "outFiles": [
+        "${workspaceFolder}/projects/project-a/.webpack/**/*.js"
+      ],
+      "protocol": "inspector",
+      "runtimeExecutable": "node",
+      "stopOnEntry": false,     
+      "cwd": "${workspaceFolder}/projects/project-a"     
+    }
+  ]
+}

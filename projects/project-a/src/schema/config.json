@@ -1,0 +1,107 @@
+{
+  "indexes": [
+    "email",
+    "phone",
+    "legalDoc",
+    "dateOfBirth",
+    "firstName",
+    "firstSurname",
+    "secondSurname"
+  ],
+  "dbSchema": {
+    "id": {
+      "table": "customer-get-by-id",
+      "hash_key": "id"
+    },
+    "search": {
+      "table": "customer-search",
+      "hash_key": "id",
+      "field": {
+        "firstName": "firstName",
+        "firstSurname": "firstSurname",
+        "secondSurname": "secondSurname",
+        "dateOfBirth": "dateOfBirth",
+        "legalDocId": "legalDocId",
+        "legalDocTypeTCode": "legalDocType",
+        "phone": "phone",
+        "email": "email"
+      },
+      "index": {
+        "firstName": {
+          "dynamoDbIndex": true,
+          "table": "customer-search-by-firstName-index",
+          "hash_key": "firstSurname",
+          "range_key": "id",
+          "keyCondition": "#firstName = :firstName",
+          "selector": [
+            "firstName"
+          ]
+        },
+        "firstSurname": {
+          "dynamoDbIndex": true,
+          "table": "customer-search-by-firstSurname-index",
+          "hash_key": "firstSurname",
+          "range_key": "id",
+          "keyCondition": "#firstSurname = :firstSurname",
+          "selector": [
+            "firstSurname"
+          ]
+        },
+        "secondSurname": {
+          "dynamoDbIndex": true,
+          "table": "customer-search-by-secondSurname-index",
+          "hash_key": "secondSurname",
+          "range_key": "id",
+          "keyCondition": "#secondSurname = :secondSurname",
+          "selector": [
+            "firstSurname"
+          ],
+          "field": {
+            "secondSurname": "secondSurname"
+          }
+        },
+        "dateOfBirth": {
+          "dynamoDbIndex": true,
+          "table": "customer-search-by-dateOfBirth-index",
+          "hash_key": "dateOfBirth",
+          "range_key": "id",
+          "keyCondition": "#dateOfBirth = :dateOfBirth",
+          "selector": [
+            "dateOfBirth"
+          ]
+        },
+        "legalDoc": {
+          "dynamoDbIndex": false,
+          "table": "customer-search-by-legalDoc",
+          "hash_key": "legalDocId",
+          "range_key": "legalDocType",
+          "keyCondition": "#legalDocId = :legalDocId and #legalDocTypeTCode = :legalDocTypeTCode",
+          "selector": [
+            "legalDocId",
+            "legalDocTypeTCode"
+          ]
+        },
+        "phone": {
+          "dynamoDbIndex": false,
+          "table": "customer-search-by-phone",
+          "hash_key": "phone",
+          "range_key": "id",
+          "keyCondition": "#phone = :phone",
+          "selector": [
+            "phone"
+          ]
+        },
+        "email": {
+          "dynamoDbIndex": false,
+          "table": "customer-search-by-email",
+          "hash_key": "email",
+          "range_key": "id",
+          "keyCondition": "#email = :email",
+          "selector": [
+            "email"
+          ]
+        }
+      }
+    }
+  }
+}

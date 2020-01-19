@@ -1,0 +1,300 @@
+service: transactionsgenerator
+# Create an individual package for our functions
+package:
+  individually: true
+
+plugins:
+  - serverless-iam-roles-per-function
+  #- serverless-step-functions
+  #- serverless-offline-step-functions
+  - serverless-pseudo-parameters
+  - serverless-dynamodb-local
+  - serverless-sam
+  # - serverless-s3-local
+  # - serverless-plugin-existing-s3
+  - serverless-plugin-scripts
+  - serverless-webpack
+  - serverless-offline
+
+custom:
+  dynamodb:
+    # If you only want to use DynamoDB Local in some stages, declare them here
+    stages:
+      - test
+    start:
+      port: 5000
+      inMemory: true
+      heapInitial: 200m
+      heapMax: 1g
+      migrate: true
+      seed: false
+      # convertEmptyValues: true
+    seed:
+      domain:
+        sources:
+          - table: domain-widgets
+            sources: [./domainWidgets.json]
+          - table: domain-fidgets
+            sources: [./domainFidgets.json]
+      test:
+        sources:
+          - table: users
+            rawsources: [./fake-test-users.json]
+          - table: subscriptions
+            sources: [./fake-test-subscriptions.json]
+  region: ${opt:region,self:provider.region}
+  scripts:
+    hooks:
+      "webpack:validate": npm run test
+    commands:
+      seed-customer-get-by-id: >
+        AWS_REGION=${self:custom.region} 
+        CUSTOMER_GET_BY_ID_TABLE=${self:provider.environment.CUSTOMER_GET_BY_ID_TABLE}
+        STAGE=${self:provider.stage}
+        ts-node src/dynamodb-seed/seed-customer-get-by-id.ts
+      truncate-customer-get-by-id: >
+        AWS_REGION=${self:custom.region} 
+        CUSTOMER_GET_BY_ID_TABLE=${self:provider.environment.CUSTOMER_GET_BY_ID_TABLE}
+        STAGE=${self:provider.stage}
+        ts-node src/dynamodb-seed/truncate-customer-get-by-id.ts
+      seed-search-customer: >
+        AWS_REGION=${self:custom.region} 
+        CUSTOMER_SEARCH_TABLE=${self:provider.environment.CUSTOMER_SEARCH_TABLE}
+        STAGE=${self:provider.stage}
+        ts-node src/dynamodb-seed/seed-search-customer.ts
+      truncate-search-customer: >
+        AWS_REGION=${self:custom.region} 
+        CUSTOMER_GET_BY_ID_TABLE=${self:provider.environment.CUSTOMER_GET_BY_ID_TABLE}
+        STAGE=${self:provider.stage}
+        ts-node src/dynamodb-seed/truncate-search-customer.ts
+
+  webpack:
+    webpackConfig: "webpack.config.js"
+    packager: "npm"
+    includeModules: true
+    # includeModules:
+    #   forceExclude:
+    #     - aws-sdk
+  # s3:
+  #   port: 8000
+  #   directory: /tmp
+  # localstack:
+  #   stages:
+  #     - local
+  serverless-offline:
+    port: 3000
+    lambdaPort: 3002
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  region: ${env:AWS_REGION ,'us-east-1'}
+  profile: ${env:AWS_PROFILE ,'BankingDev'}
+  stage: ${opt:stage, 'dev'}
+  ##memorySize: 512
+  environment:
+    STAGE: "dev"
+    CUSTOMER_GET_BY_ID_TABLE: ${self:provider.stage}-${file(./src/schema/config.json):dbSchema.id.table}
+    CUSTOMER_SEARCH_TABLE: ${self:provider.stage}-${file(./src/schema/config.json):dbSchema.search.table}
+    CUSTOMER_SEARCH_BY_FIRST_NAME_INDEX: ${self:provider.stage}-${file(./src/schema/config.json):dbSchema.search.index.firstName.table}
+    CUSTOMER_SEARCH_BY_FIRST_SURNAME_INDEX: ${self:provider.stage}-${file(./src/schema/config.json):dbSchema.search.index.firstSurname.table}
+    CUSTOMER_SEARCH_BY_SECOND_SURNAME_INDEX: ${self:provider.stage}-${file(./src/schema/config.json):dbSchema.search.index.secondSurname.table}
+    CUSTOMER_SEARCH_BY_DATE_OF_BIRTH_INDEX: ${self:provider.stage}-${file(./src/schema/config.json):dbSchema.search.index.dateOfBirth.table}
+    CUSTOMER_SEARCH_BY_EMAIL_TABLE: ${self:provider.stage}-${file(./src/schema/config.json):dbSchema.search.index.email.table}
+    CUSTOMER_SEARCH_BY_PHONE_TABLE: ${self:provider.stage}-${file(./src/schema/config.json):dbSchema.search.index.phone.table}
+    CUSTOMER_SEARCH_BY_LEGALDOC_TABLE: ${self:provider.stage}-${file(./src/schema/config.json):dbSchema.search.index.legalDoc.table}
+
+  # Table	arn:aws:dynamodb:region:account-id:table/table-name
+  # Index	arn:aws:dynamodb:region:account-id:table/table-name/index/index-name
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+      Resource:
+        - "arn:aws:dynamodb:${self:custom.region}:*:table/${self:provider.environment.CUSTOMER_GET_BY_ID_TABLE}"
+        - "arn:aws:dynamodb:${self:custom.region}:*:table/${self:provider.environment.CUSTOMER_SEARCH_TABLE}"
+        - "arn:aws:dynamodb:${self:custom.region}:*:table/${self:provider.environment.CUSTOMER_SEARCH_TABLE}/index/*"
+        - "arn:aws:dynamodb:${self:custom.region}:*:table/${self:provider.environment.CUSTOMER_SEARCH_BY_EMAIL_TABLE}"
+        - "arn:aws:dynamodb:${self:custom.region}:*:table/${self:provider.environment.CUSTOMER_SEARCH_BY_PHONE_TABLE}"
+        - "arn:aws:dynamodb:${self:custom.region}:*:table/${self:provider.environment.CUSTOMER_SEARCH_BY_LEGALDOC_TABLE}"
+
+functions:
+  search-customer:
+    handler: src/functions/search-customer.handler
+    description: API to get information about all customers
+    events:
+      - http:
+          path: customers
+          method: get
+  get-customer:
+    handler: src/functions/get-customer.handler
+    description: >-
+      API to get particular customer detail. It is acheived by supplying the
+      customer Id as path parameter
+    events:
+      - http:
+          path: customers/{customer_id}
+          method: get
+resources:
+  Resources:
+    CustomerGetByIdDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      ##DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.CUSTOMER_GET_BY_ID_TABLE}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    CustomerSearchDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      ##DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.CUSTOMER_SEARCH_TABLE}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: firstName
+            AttributeType: S
+          - AttributeName: firstSurname
+            AttributeType: S
+          - AttributeName: secondSurname
+            AttributeType: S
+          - AttributeName: dateOfBirth
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+        GlobalSecondaryIndexes:
+          - IndexName: ${self:provider.environment.CUSTOMER_SEARCH_BY_FIRST_NAME_INDEX}
+            KeySchema:
+              - AttributeName: firstName
+                KeyType: HASH
+              - AttributeName: id
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+          - IndexName: ${self:provider.environment.CUSTOMER_SEARCH_BY_FIRST_SURNAME_INDEX}
+            KeySchema:
+              - AttributeName: firstSurname
+                KeyType: HASH
+              - AttributeName: id
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+          - IndexName: ${self:provider.environment.CUSTOMER_SEARCH_BY_SECOND_SURNAME_INDEX}
+            KeySchema:
+              - AttributeName: secondSurname
+                KeyType: HASH
+              - AttributeName: id
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+          - IndexName: ${self:provider.environment.CUSTOMER_SEARCH_BY_DATE_OF_BIRTH_INDEX}
+            KeySchema:
+              - AttributeName: dateOfBirth
+                KeyType: HASH
+              - AttributeName: id
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+    CustomerSearchByEmailDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: ${self:provider.environment.CUSTOMER_SEARCH_BY_EMAIL_TABLE}
+        KeySchema:
+          - AttributeName: email
+            KeyType: HASH
+          - AttributeName: id
+            KeyType: RANGE
+        AttributeDefinitions:
+          - AttributeName: email
+            AttributeType: S
+          - AttributeName: id
+            AttributeType: S
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    CustomerSearchByPhoneDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: ${self:provider.environment.CUSTOMER_SEARCH_BY_PHONE_TABLE}
+        KeySchema:
+          - AttributeName: phone
+            KeyType: HASH
+          - AttributeName: id
+            KeyType: RANGE
+        AttributeDefinitions:
+          - AttributeName: phone
+            AttributeType: S
+          - AttributeName: id
+            AttributeType: S
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    CustomerSearchByLegalDocDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: ${self:provider.environment.CUSTOMER_SEARCH_BY_LEGALDOC_TABLE}
+        KeySchema:
+          - AttributeName: legalDocId
+            KeyType: HASH
+          - AttributeName: legalDocType
+            KeyType: RANGE
+        AttributeDefinitions:
+          - AttributeName: legalDocId
+            AttributeType: S
+          - AttributeName: legalDocType
+            AttributeType: S
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+  Outputs:
+    CustomerGetByIdDynamoDbTable:
+      Value:
+        "Fn::GetAtt": [CustomerGetByIdDynamoDbTable, Arn]
+      Export:
+        Name: ${self:provider.environment.CUSTOMER_GET_BY_ID_TABLE}
+    CustomerSearchDynamoDbTable:
+      Value:
+        "Fn::GetAtt": [CustomerSearchDynamoDbTable, Arn]
+      Export:
+        Name: ${self:provider.environment.CUSTOMER_SEARCH_TABLE}
+    CustomerSearchByEmailDynamoDbTable:
+      Value:
+        "Fn::GetAtt": [CustomerSearchByEmailDynamoDbTable, Arn]
+      Export:
+        Name: ${self:provider.environment.CUSTOMER_SEARCH_BY_EMAIL_TABLE}
+    CustomerSearchByPhoneDynamoDbTable:
+      Value:
+        "Fn::GetAtt": [CustomerSearchByPhoneDynamoDbTable, Arn]
+      Export:
+        Name: ${self:provider.environment.CUSTOMER_SEARCH_BY_PHONE_TABLE}
+    CustomerSearchByLegalDocDynamoDbTable:
+      Value:
+        "Fn::GetAtt": [CustomerSearchByLegalDocDynamoDbTable, Arn]
+      Export:
+        Name: ${self:provider.environment.CUSTOMER_SEARCH_BY_LEGALDOC_TABLE}

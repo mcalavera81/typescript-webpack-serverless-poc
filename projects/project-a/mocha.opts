@@ -1,0 +1,6 @@
+-r ts-node/register
+--timeout 5000
+--reporter list
+--ui bdd
+--exit
+test/integration/**/*.ts
